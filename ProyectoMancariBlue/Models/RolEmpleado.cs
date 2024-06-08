@@ -10,8 +10,8 @@ namespace ProyectoMancariBlue.Models
             Empleados = new HashSet<Empleado>();
         }
 
-        public int IdRolEmpleado { get; set; }
-        public string Rol { get; set; } = null!;
+        public int RolEmpleadoId { get; set; }
+        public string Name { get; set; } = null!;
 
         public virtual ICollection<Empleado> Empleados { get; set; }
     }
