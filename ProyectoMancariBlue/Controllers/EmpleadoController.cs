@@ -52,24 +52,24 @@ namespace ProyectoMancariBlue.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CrearEmpleado([Bind("EmpleadoId,Password,CedEmpleado,Nombre,Apellido,Nacionalidad,Email,fechaNacimiento,Provincia,Canton,Distrito,fechaIngreso,Salario,Habilitado,DepartamentoId,RoleEmpleadoId")] Empleado empleado )
         {
-            try
+
+            empleado.Password = BCrypt.HashPassword(empleado.Password);
+
+            if (EmpleadoExists(empleado.CedEmpleado))
             {
-
-                empleado.Password = BCrypt.HashPassword(empleado.Password);
-
-
-                var new_empleado = await _context.Empleados.AddAsync(empleado);
-                await _context.SaveChangesAsync();
-            
-                if (new_empleado == null) { return NotFound(); }
-
-
-            } catch {
-
                 ModelState.AddModelError("CedEmpleado", "Cédula ya en uso por otro empleado");
+                return View(empleado);
             }
 
 
+            var new_empleado = await _context.Empleados.AddAsync(empleado);
+            await _context.SaveChangesAsync();
+            
+            if (new_empleado == null) { return NotFound(); }
+
+
+
+            ViewData["DepartamentoId"] = new SelectList(_context.Departamentos, "DepartamentoId", "DepartamentoId", empleado.DepartamentoId);
             return View(empleado);
         }
 
