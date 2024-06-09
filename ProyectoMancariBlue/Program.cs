@@ -1,30 +1,22 @@
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
-using ProyectoMancariBlue.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Agregar servicios al contenedor.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ProyectoMancariBlue.Models.DBContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.3.0-mysql")));
-
-
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Configurar DbContext para MySQL
+builder.Services.AddDbContext<DBContext>(options =>
+    options.UseMySql(
+        connectionString: connectionString,
+        ServerVersion.AutoDetect(connectionString)
+    ));
 
 var app = builder.Build();
 
-
-
-
-
-
-// Configure the HTTP request pipeline.
+// Configurar el pipeline de solicitudes HTTP.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -37,6 +29,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Login}/{id?}"
+);
 
 app.Run();

@@ -6,29 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoMancariBlue.Models;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Cryptography;
-using System.Security.Cryptography;
 
 namespace ProyectoMancariBlue.Controllers
 {
-    public class EMPLEADOTEST : Controller
+    public class EmpleadoesController : Controller
     {
         private readonly DBContext _context;
 
-        public EMPLEADOTEST(DBContext context)
+        public EmpleadoesController(DBContext context)
         {
             _context = context;
         }
 
-        // GET: EMPLEADOTEST
+        // GET: Empleadoes
         public async Task<IActionResult> Index()
         {
             var dBContext = _context.Empleados.Include(e => e.Departamento).Include(e => e.RoleEmpleado);
             return View(await dBContext.ToListAsync());
         }
 
-        // GET: EMPLEADOTEST/Details/5
+        // GET: Empleadoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Empleados == null)
@@ -48,15 +45,15 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado);
         }
 
-        // GET: EMPLEADOTEST/Create
+        // GET: Empleadoes/Create
         public IActionResult Create()
         {
-            ViewData["DepartamentoName"] = new SelectList(_context.Departamentos, "DepartamentoId", "Name");
-            ViewData["RoleName"] = new SelectList(_context.RolEmpleados, "RolEmpleadoId", "Name");
+            ViewData["DepartamentoId"] = new SelectList(_context.Departamentos, "DepartamentoId", "DepartamentoId");
+            ViewData["RoleEmpleadoId"] = new SelectList(_context.RolEmpleados, "RolEmpleadoId", "RolEmpleadoId");
             return View();
         }
 
-        // POST: EMPLEADOTEST/Create
+        // POST: Empleadoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -69,27 +66,12 @@ namespace ProyectoMancariBlue.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            byte[] salt = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
-               
-            
-            rng.GetBytes(salt);
-
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: ,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
-
-
-            ViewData["DepartamentoName"] = new SelectList(_context.Departamentos, "DepartamentoId", "Name", empleado.Departamento);
-            ViewData["RoleName"] = new SelectList(_context.RolEmpleados, "RolEmpleadoId", "Name", empleado.RoleEmpleado);
+            ViewData["DepartamentoId"] = new SelectList(_context.Departamentos, "DepartamentoId", "DepartamentoId", empleado.DepartamentoId);
+            ViewData["RoleEmpleadoId"] = new SelectList(_context.RolEmpleados, "RolEmpleadoId", "RolEmpleadoId", empleado.RoleEmpleadoId);
             return View(empleado);
         }
 
-        // GET: EMPLEADOTEST/Edit/5
+        // GET: Empleadoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Empleados == null)
@@ -107,7 +89,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado);
         }
 
-        // POST: EMPLEADOTEST/Edit/5
+        // POST: Empleadoes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -144,7 +126,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado);
         }
 
-        // GET: EMPLEADOTEST/Delete/5
+        // GET: Empleadoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Empleados == null)
@@ -164,7 +146,7 @@ namespace ProyectoMancariBlue.Controllers
             return View(empleado);
         }
 
-        // POST: EMPLEADOTEST/Delete/5
+        // POST: Empleadoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

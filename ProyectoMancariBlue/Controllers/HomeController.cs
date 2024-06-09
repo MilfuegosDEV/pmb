@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProyectoMancariBlue.Models;
 using System.Diagnostics;
 
 namespace ProyectoMancariBlue.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly DBContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(DBContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
+            ViewBag.EmpleadosCount = _context.Empleados.Count();
             return View();
         }
 

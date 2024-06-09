@@ -103,10 +103,10 @@
                 @Html.DisplayFor(modelItem => item.Habilitado)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Departamento.Name)
+                @Html.DisplayFor(modelItem => item.Departamento.DepartamentoId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RoleEmpleado.Name)
+                @Html.DisplayFor(modelItem => item.RoleEmpleado.RolEmpleadoId)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.EmpleadoId">Edit</a> |

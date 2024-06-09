@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ProyectoMancariBlue.Models.Empleado;
+
+@{
     ViewData["Title"] = "Index";
 
 }
@@ -29,7 +31,7 @@
             <i class="icon fa fa-users fa-3x"></i>
             <div class="info">
                 <h4>Empleados</h4>
-                <p><b>7</b></p>
+                <p><b>@ViewBag.EmpleadosCount</b></p>
             </div>
         </div>
     </div>

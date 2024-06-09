@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<ProyectoMancariBlue.Models.Empleado>;
+
+@{
     ViewData["Title"] = "Empleados";
 }
 @functions {
@@ -29,124 +31,64 @@
                         <table class="table table-hover table-bordered" id="templeados">
                             <thead>
                                 <tr>
+                                    <th>
+                                        Cédula
+                                    </th>
+                                    <th>
+                                        Nombre
+                                    </th>
+                                    <th>
+                                        Apellidos
+                                    </th>
                                 <th>
-                                   Cédula
+                                    Email
                                 </th>
                                     <th>
-                                        Nombre Completo
+                                        Departamento
                                     </th>
                                     <th>
-                                        Correo
-                                    </th>
-
-                                    <th>
-                                        Puesto
+                                        Fecha de ingreso
                                     </th>
                                     <th>
-                                        Fecha de Ingreso
+                                        Estado
                                     </th>
-                                <th >
-                                    Vacaciones
-                                </th>
-                                <th>
-                                    Estado
-                                </th>
                                     <th>
-                                       Acciones
+                                        Acciones
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach(var item in Model) {
                                     <tr>
                                         <td>
-                                            1-1492-0416
+                                            @Html.DisplayFor(modelItem => item.CedEmpleado)
                                         </td>
                                         <td>
-                                            Josue Rojas Chaves
+                                            @Html.DisplayFor(modelItem => item.Nombre)
                                         </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Apellido)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Email)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Departamento.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.FechaIngreso)
+                                        </td>                          
+                                        <td>
+                                            <span class="badge badge-success">Activo</span>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado" asp-route-id="@item.CedEmpleado">Editar</a>
+                                            <a class="btn btn-info" asp-action="Detalles" asp-controller="Empleado" asp-route-id="@item.CedEmpleado">Detalle</a>
+                                            <a class="btn btn-danger cambiar-estado-btn" asp-action="DeshabilitarEmpleado" asp-controller="Empleado" asp-protocol="put" asp-route-id="@item.CedEmpleado">Desactivar</a>
 
-                                        <td>
-                                           svcrove@outlook.com
-                                        </td>
-                                        <td>
-                                            Ganaero
-                                        </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-exclamation-circle"  aria-hidden="true"></i>
-                                </td>
-                                <td>
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-                                        <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleado" sp-controller="Empleado">Detalle</a>
-                                                <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
-                                            
                                         </td>
                                     </tr>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                    Manuel Barrantes Garcia
-                                </td>
-
-                                <td>
-                                    manu@outlook.com
-                                </td>
-                                <td>
-                                    Asistente
-                                </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                </td>
-                                <td>
-                                    <span class="badge badge-danger">Inactivo</span>
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleado" sp-controller="Empleado">Detalle</a>
-                                    <a class="btn btn-success cambiar-estado-btn" href="#">Activar</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    1-1492-0416
-                                </td>
-                                <td>
-                                    Ariana Montero Salazar
-                                </td>
-
-                                <td>
-                                    armosa@outlook.com
-                                </td>
-                                <td>
-                                    Veterinario
-                                </td>
-                                <td>
-                                    02/04/2024
-                                </td>
-                                <td style="text-align:center">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                </td>
-                                <td >
-                                    <span class="badge badge-success">Activo</span>
-                                </td>
-
-                                <td>
-                                    <a class="btn btn-primary" asp-action="EditarEmpleados" asp-controller="Empleados">Editar</a>
-                                    <a class="btn btn-info" asp-action="VerEmpleados" sp-controller="Empleados">Detalle</a>
-                                    <a class="btn btn-danger cambiar-estado-btn" href="#">Desactivar</a>
-
-                                </td>
-                            </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -165,7 +107,7 @@
             $('.cambiar-estado-btn').click(function (e) {
                 e.preventDefault();
 
-                var id = $(this).data('id');
+                var id = $(this).data('cedEmpleado');
 
                 // Mostrar confirmación con SweetAlert2
                 Swal.fire({

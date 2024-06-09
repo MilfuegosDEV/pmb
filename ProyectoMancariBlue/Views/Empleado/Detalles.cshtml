@@ -1,5 +1,8 @@
-﻿@{
-    ViewData["Title"] = "VerEmpleado";
+﻿@model ProyectoMancariBlue.Models.Empleado;
+
+
+@{
+    ViewData["Title"] = "Detalles";
 }
 
 <div class="app-title">
@@ -20,58 +23,54 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="control-label">Cédula</label>
-                        <input class="form-control" value="1-1492-0416" readonly />
+                        <label class="control-label"></label>
+                        <input class="form-control" value="@Html.DisplayFor(model => model.CedEmpleado)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Nombre</label>
-                        <input class="form-control" value="Josue" readonly />
+                        <input class="form-control" value="@Html.DisplayFor(model => model.Nombre)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Apellidos</label>
-                        <input class="form-control" value="Rojas Chaves" readonly />
+                        <input class="form-control" value="@Html.DisplayFor(model => model.Apellido)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Nacionalidad</label>
-                        <input class="form-control" value="Costarricense" readonly />
+                        <input class="form-control" value="@Html.DisplayFor(model => model.Nacionalidad)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Correo</label>
-                        <input class="form-control" value="svcrove@outlook.com" readonly />
+                        <input class="form-control" value="@Html.DisplayFor(model => model.CedEmpleado)" readonly />
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Edad</label>
-                        <input class="form-control" value="32" readonly />
+                        <label class="control-label">Fecha de nacimiento</label>
+                        <input class="form-control" type="date" value="@Html.DisplayFor(model => model.FechaNacimiento)" readonly />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label">Provincia</label>
-                        <input class="form-control" value="San Jose" readonly />
+                        <input class="form-control" value="@Html.DisplayFor(model => model.Provincia)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Cantón</label>
-                        <input class="form-control" value="Desamparados" readonly />
+                        <input class="form-control" value="@Html.DisplayFor(model => model.Canton)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Distrito</label>
-                        <input class="form-control" value="San Rafael Abajo" readonly />
+                        <input class="form-control" value="@Html.DisplayFor(model => model.Distrito)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Puesto</label>
-                        <input class="form-control" value="Adminsitrador" readonly />
+                        <input class="form-control" value="@Html.DisplayFor(model => model.RoleEmpleado.Name)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Fecha de Ingreso</label>
-                        <input type="date" class="form-control" value="02/04/2024" readonly />
+                        <input type="date" class="form-control" type="date" value="@Html.DisplayFor(model => model.FechaIngreso)" readonly />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Salario</label>
-                        <input class="form-control" value="$1800" readonly />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Saldo Vacaciones</label>
-                        <input class="form-control" value="20" readonly />
+                        <input class="form-control" value="$@Html.DisplayFor(model => model.Salario)" readonly />
                     </div>
                 </div>
             </div>

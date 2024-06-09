@@ -20,14 +20,6 @@ namespace ProyectoMancariBlue.Models
         public virtual DbSet<Empleado> Empleados { get; set; } = null!;
         public virtual DbSet<RolEmpleado> RolEmpleados { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseMySql("server=127.0.0.1;port=3306;database=ganaderia;uid=root;password=admin", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.3.0-mysql"));
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("utf8mb4_0900_ai_ci")
@@ -101,7 +93,7 @@ namespace ProyectoMancariBlue.Models
                     .HasColumnName("nombre");
 
                 entity.Property(e => e.Password)
-                    .HasColumnType("blob")
+                    .HasColumnType("string")
                     .HasColumnName("password");
 
                 entity.Property(e => e.Provincia)
@@ -149,6 +141,7 @@ namespace ProyectoMancariBlue.Models
 
             OnModelCreatingPartial(modelBuilder);
         }
+
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
