@@ -5,18 +5,17 @@
 }
 
 <div class="login-box">
-    <form asp-action="LoginAut" asp-controller="Home" class="login-form" method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form class="login-form" asp-action="LoginAut" method="post">
         <h2 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>Iniciar Sesion</h2>
         <div class="form-group">
             <label  class="control-label"></label>
             <input name="Email" asp-for="Email" class="form-control" placeholder="Correo" />
-            <span asp-validation-for="Email" class="text-danger"></span>
+            <span  class="text-danger"></span>
         </div>
         <div class="form-group">
             <label  class="control-label"></label>
             <input name="Password" asp-for="Password" type="password" class="form-control" placeholder="*******" />
-            <span  asp-validation-for="Password" class="text-danger"></span>
+            <span  class="text-danger"></span>
         </div>
         <div class="form-group">
             <div class="utility">
