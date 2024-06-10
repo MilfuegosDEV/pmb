@@ -63,7 +63,9 @@
                     {
                         "data": null,
                         "render": function (data, type, row) {
-                            return `<button class="btn btn-sm btn-primary cambiar-estado-btn" data-cedEmpleado="${row.cedCliente}">Cambiar Estado</button>`;
+                            return `<button class="btn btn-sm btn-primary editar-empleado-btn" data-cedEmpleado="${row.cedEmpleado}">Editar</button>
+                                    <button class="btn btn-sm btn-primary ver-detalles" data-cedEmpleado="${row.cedEmpleado}">Detalles</button>
+                                    <button class="btn btn-sm btn-secondary cambiar-estado-btn" data-cedEmpleado="${row.cedEmpleado}">Cambiar estado</button>`;
                         }
                     }
                 ]
@@ -72,7 +74,8 @@
             $('#templeados').on('click', '.cambiar-estado-btn', function (e) {
                 e.preventDefault();
 
-                var cedEmpleado = $(this).data('cedEmpleado');
+                var cedEmpleado = $(this).data('cedempleado');
+
 
                 // Mostrar confirmación con SweetAlert2
                 Swal.fire({
@@ -85,10 +88,11 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Realizar la llamada AJAX si se confirma la acción
+                        console.log(cedEmpleado);
                         $.ajax({
-                            url: '@Url.Action("ChangeState", "Empleado")',
+                            url: '@Url.Action("CambiarEstado", "Empleado")',
                             type: 'POST',
-                            data: { cedEmpleado: cedEmpleado },
+                            data: { cedEmpleado },
                             success: function (response) {
                                 // Mostrar mensaje de éxito con SweetAlert2
                                 Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
