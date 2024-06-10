@@ -38,7 +38,7 @@ namespace ProyectoMancariBlue.Models
         [RegularExpression(@"^\d+$", ErrorMessage = "El salario debe ser un número entero")]
         public decimal Salario { get; set; }
         public bool? Habilitado { get; set; }
-        public int DepartamentoId { get; set; }
+        public int? DepartamentoId { get; set; }
         public int? RoleEmpleadoId { get; set; }
 
         public virtual Departamento Departamento { get; set; } = null!;
