@@ -26,6 +26,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 	};
 });
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Configurar el pipeline de solicitudes HTTP.

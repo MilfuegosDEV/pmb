@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 
@@ -23,10 +24,12 @@ namespace ProyectoMancariBlue.Controllers
     public class HomeController : Controller
     {
         private readonly DBContext _context;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public HomeController(DBContext context)
+        public HomeController(DBContext context, IHttpClientFactory clientFactory)
         {
             _context = context;
+            _clientFactory = clientFactory; 
         }
 
 
@@ -75,8 +78,9 @@ namespace ProyectoMancariBlue.Controllers
             return null;
         }
 
-        [HttpPost("api/home/post")]
-        public async Task<IActionResult> Authenticate([FromBody] LoginForm login)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> LoginAut([FromBody] LoginForm login)
         {
             var user = await AuthenticateAsync(login);
 
@@ -86,16 +90,16 @@ namespace ProyectoMancariBlue.Controllers
             }
 
             var token = CreateJWT(user);
-            return Ok(new { token });
+            return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet("api/home/index")]
-        [Authorize]
+
         public IActionResult Index()
         {
-            var empleadosCount = _context.Empleados.Count();
-            return Ok(new { empleadosCount });
+            ViewBag.EmpleadosCount = _context.Empleados.Count();
+            return View();
         }
+
 
         public IActionResult Privacy()
         {
@@ -105,24 +109,6 @@ namespace ProyectoMancariBlue.Controllers
         public IActionResult Login()
         {
             return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginAut(string Email, string Password)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _context.Empleados.FirstOrDefaultAsync(e => e.Email == Email);
-
-                if (user != null && BCrypt.Net.BCrypt.Verify(Password, user.Password))
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-
-            ModelState.AddModelError(string.Empty, "Correo electrónico o contraseña incorrectos.");
-            return View("Login");
         }
 
         public IActionResult RestablecerContrasena()
