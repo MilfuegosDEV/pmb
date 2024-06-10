@@ -28,10 +28,25 @@ namespace ProyectoMancariBlue.Controllers
             return View();
         }
 
-        public IActionResult LoginAut()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginAut(string Email, string Password)
         {
-            return RedirectToAction("Index");
+
+            if (ModelState.IsValid)
+            {
+                IQueryable<Empleado> empleadosQuery = _context.Empleados.AsQueryable();
+                var pwd = await empleadosQuery.Where(e => e.Email == Email).Select(e => e.Password).FirstOrDefaultAsync();
+
+                if (pwd != null && BCrypt.Net.BCrypt.Verify(Password, pwd))
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            ModelState.AddModelError(string.Empty, "Correo electrónico o contraseña incorrectos.");
+            return View("Login");
         }
+
 
         public IActionResult RestablecerContrasena()
         {
