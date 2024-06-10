@@ -1,16 +1,7 @@
-﻿@model IEnumerable<ProyectoMancariBlue.Models.Empleado>;
-
-@{
+﻿@{
     ViewData["Title"] = "Empleados";
 }
-@functions {
-    string NombreCompleto(string n, string a)
-    {
-        return n + " " + a;
 
-    }
-
-}
 <div class="app-title">
     <div>
         <h1><i class="fa fa-th-list" style="margin-right: 10px;"></i>Administración de Empleados</h1>
@@ -23,91 +14,65 @@
         <li class="breadcrumb-item">Empleados</li>
     </ul>
 </div>
-<div class="row" style="flex-direction:column">
-        <div class="col-md-14">
-            <div class="tile">
-                <div class="tile-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="templeados">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Cédula
-                                    </th>
-                                    <th>
-                                        Nombre
-                                    </th>
-                                    <th>
-                                        Apellidos
-                                    </th>
-                                <th>
-                                    Email
-                                </th>
-                                    <th>
-                                        Departamento
-                                    </th>
-                                    <th>
-                                        Fecha de ingreso
-                                    </th>
-                                    <th>
-                                        Estado
-                                    </th>
-                                    <th>
-                                        Acciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach(var item in Model) {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.CedEmpleado)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Nombre)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Apellido)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Email)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Departamento.Name)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.FechaIngreso)
-                                        </td>                          
-                                        <td>
-                                            <span class="badge badge-success">Activo</span>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-primary" asp-action="EditarEmpleado" asp-controller="Empleado" asp-route-id="@item.CedEmpleado">Editar</a>
-                                            <a class="btn btn-info" asp-action="Detalles" asp-controller="Empleado" asp-route-id="@item.CedEmpleado">Detalle</a>
-                                            <a class="btn btn-danger cambiar-estado-btn" asp-action="DeshabilitarEmpleado" asp-controller="Empleado" asp-protocol="put" asp-route-id="@item.CedEmpleado">Desactivar</a>
-
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+<div class="row" style="flex-direction: column;">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered" id="templeados">
+                        <thead>
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Nombre</th>
+                                <th>Apellidos</th>
+                                <th>Email</th>
+                                <th>Departamento</th>
+                                <th>Fecha de ingreso</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 @section Scripts {
     <script src="~/js/plugins/jquery.datatables.min.js"></script>
     <script src="~/js/plugins/datatables.bootstrap.min.js"></script>
-    <script type="text/javascript">$('#templeados').DataTable();</script>
-    <script>
-
+    <script type="text/javascript">
         $(document).ready(function () {
-            $('.cambiar-estado-btn').click(function (e) {
+            $('#templeados').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "@Url.Action("DataTable", "Empleado")",
+                    "type": "GET",
+                    "dataSrc": "data"
+                },
+                "columns": [
+                    { "data": "cedEmpleado" },
+                    { "data": "nombre" },
+                    { "data": "apellido" },
+                    { "data": "email" },
+                    { "data": "departamento" },
+                    { "data": "fechaIngreso" },
+                    { "data": "estado" },
+                    {
+                        "data": null,
+                        "render": function (data, type, row) {
+                            return `<button class="btn btn-sm btn-primary cambiar-estado-btn" data-cedEmpleado="${row.cedCliente}">Cambiar Estado</button>`;
+                        }
+                    }
+                ]
+            });
+
+            $('#templeados').on('click', '.cambiar-estado-btn', function (e) {
                 e.preventDefault();
 
-                var id = $(this).data('cedEmpleado');
+                var cedEmpleado = $(this).data('cedEmpleado');
 
                 // Mostrar confirmación con SweetAlert2
                 Swal.fire({
@@ -121,13 +86,14 @@
                     if (result.isConfirmed) {
                         // Realizar la llamada AJAX si se confirma la acción
                         $.ajax({
-                            url: '@Url.Action("Index", "Empleado")',
-                            type: 'GET',
+                            url: '@Url.Action("ChangeState", "Empleado")',
+                            type: 'POST',
+                            data: { cedEmpleado: cedEmpleado },
                             success: function (response) {
                                 // Mostrar mensaje de éxito con SweetAlert2
                                 Swal.fire('Éxito', 'El estado ha sido cambiado correctamente.', 'success').then(function () {
-                                    // Recargar la página
-                                    location.reload();
+                                    // Recargar la tabla
+                                    $('#templeados').DataTable().ajax.reload();
                                 });
                             },
                             error: function (xhr, status, error) {
@@ -140,9 +106,5 @@
                 });
             });
         });
-
     </script>
-
 }
-
-

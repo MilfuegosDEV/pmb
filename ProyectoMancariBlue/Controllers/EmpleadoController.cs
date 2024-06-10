@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace ProyectoMancariBlue.Controllers
 {
     using BCrypt.Net;
+    using Microsoft.EntityFrameworkCore;
+    using ProyectoMancariBlue.Migrations;
+    using System.ComponentModel;
+    using System.Linq;
 
     public class EmpleadoController : Controller
     {
@@ -14,11 +18,57 @@ namespace ProyectoMancariBlue.Controllers
             _context = context;
         }
 
-        // GET: Empleado
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Datatable()
         {
-            var dBContext =  _context.Empleados.Include(e => e.Departamento).Include(e => e.RoleEmpleado);
-            return View(await dBContext.ToListAsync());
+            var draw = HttpContext.Request.Query["draw"].FirstOrDefault();
+            var start = Request.Query["start"].FirstOrDefault();
+            var length = Request.Query["length"].FirstOrDefault();
+            var sortColumn = Request.Query["columns[" + Request.Query["order[0][column]"].FirstOrDefault() + "][data]"].FirstOrDefault();
+            var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
+            var searchValue = Request.Query["search[value]"].FirstOrDefault();
+            int pageSize = length != null ? Convert.ToInt32(length) : 0;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+
+            IQueryable<Empleado> empleadosQuery = _context.Empleados.AsQueryable();
+
+            // Search
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                empleadosQuery = empleadosQuery.Where(e => e.Nombre.Contains(searchValue) || e.Apellido.Contains(searchValue));
+            }
+
+            // Total count
+            var totalRecords = await empleadosQuery.CountAsync();
+
+            // Pagination
+            var empleados = await empleadosQuery
+                .Select(e => new {
+                    e.CedEmpleado,
+                    email = e.Email,
+                    e.Nombre,
+                    e.Apellido,
+                    fechaIngreso = e.FechaIngreso.ToString("dd/MM/yyyy"),
+                    estado = e.Habilitado,
+                    departamento = e.Departamento.Name
+                })
+                .ToListAsync();
+
+            var response = new
+            {
+                draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = empleados
+            };
+
+            return Ok(response);
+        }
+
+
+        // GET: Empleado
+        public IActionResult Index()
+        {
+            return View();
         }
 
         // GET: Empleado/Detalles/111111111
@@ -58,19 +108,17 @@ namespace ProyectoMancariBlue.Controllers
             if (EmpleadoExists(empleado.CedEmpleado))
             {
                 ModelState.AddModelError("CedEmpleado", "Cédula ya en uso por otro empleado");
+                ViewData["DepartamentoId"] = new SelectList(_context.Departamentos, "DepartamentoId", "Name");
+
                 return View(empleado);
             }
 
 
             var new_empleado = await _context.Empleados.AddAsync(empleado);
             await _context.SaveChangesAsync();
-            
-            if (new_empleado == null) { return NotFound(); }
-
-
 
             ViewData["DepartamentoId"] = new SelectList(_context.Departamentos, "DepartamentoId", "DepartamentoId", empleado.DepartamentoId);
-            return View(empleado);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Empleado/Edit/5
